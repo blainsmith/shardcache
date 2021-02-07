@@ -2,13 +2,12 @@ package shardcache_test
 
 import (
 	"testing"
-	"time"
 
 	"blainsmith.com/go/shardcache"
 )
 
 func TestShardCache(t *testing.T) {
-	sc := shardcache.New(shardcache.Options{Shards: 64, Expiration: time.Minute})
+	sc := shardcache.New(64)
 
 	sc.Set(0, "zero")
 	sc.Set(1, 1)
@@ -28,7 +27,7 @@ func TestShardCache(t *testing.T) {
 }
 
 func BenchmarkShardCacheGet(b *testing.B) {
-	sc := shardcache.New(shardcache.Options{Shards: 64, Expiration: time.Minute})
+	sc := shardcache.New(64)
 
 	sc.Set(0, nil)
 	sc.Set(1, nil)
@@ -40,7 +39,7 @@ func BenchmarkShardCacheGet(b *testing.B) {
 }
 
 func BenchmarkShardCacheSet(b *testing.B) {
-	sc := shardcache.New(shardcache.Options{Shards: 64})
+	sc := shardcache.New(64)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
