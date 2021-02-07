@@ -24,6 +24,12 @@ func TestShardCache(t *testing.T) {
 	if val, ok := sc.Get(2).([]byte); !ok || val[0] != 0x02 {
 		t.Errorf("could not get key 2 as 0x02, %v, %v", ok, val)
 	}
+
+	sc.Delete(1)
+
+	if val := sc.Get(1); val != nil {
+		t.Errorf("got key 1, %v", val)
+	}
 }
 
 func BenchmarkShardCacheGet(b *testing.B) {
