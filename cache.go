@@ -44,9 +44,6 @@ func (sc *ShardCache) Get(key uint64) interface{} {
 
 // Set a key in the cache and use a write lock only for the shard that will hold the value leaving all other shards available for reads
 func (sc *ShardCache) Set(key uint64, value interface{}) {
-	sc.mu.RLock()
-	defer sc.mu.RUnlock()
-
 	sc.shards[key&sc.n].mu.Lock()
 	defer sc.shards[key&sc.n].mu.Unlock()
 
@@ -55,9 +52,6 @@ func (sc *ShardCache) Set(key uint64, value interface{}) {
 
 // Delete a key in the cache and use a write lock only for the shard that has the value leaving all other shards available for reads
 func (sc *ShardCache) Delete(key uint64) {
-	sc.mu.RLock()
-	defer sc.mu.RUnlock()
-
 	sc.shards[key&sc.n].mu.Lock()
 	defer sc.shards[key&sc.n].mu.Unlock()
 
