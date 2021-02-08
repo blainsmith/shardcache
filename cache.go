@@ -5,13 +5,12 @@ import (
 )
 
 type shard struct {
-	mu    sync.Mutex
+	mu    sync.RWMutex
 	items map[uint64]interface{}
 }
 
 // ShardCache will keep track and shard keys based on the number of shards it holds around mutexes so this is safe for concurrent use
 type ShardCache struct {
-	mu     sync.RWMutex
 	n      uint64
 	shards []*shard
 }
@@ -36,8 +35,8 @@ func New(shards uint64) *ShardCache {
 
 // Get a key from the cache and only use a read lock to access it
 func (sc *ShardCache) Get(key uint64) interface{} {
-	sc.mu.RLock()
-	defer sc.mu.RUnlock()
+	sc.shards[key&sc.n].mu.RLock()
+	defer sc.shards[key&sc.n].mu.RUnlock()
 
 	return sc.shards[key&sc.n].items[key]
 }
